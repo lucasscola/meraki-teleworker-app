@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blueprints-conf
+data:
+  # Fill blueprints with lines with structure: ["UserGroupID", "MerakNetworkID"]
+  blueprints.json: |
+    [
+      ["1234445a-aaaa-aaaa-aaaa-12345678aaaa", "App-Blueprint-IT"],
+      ["1234445a-aaaa-aaaa-aaaa-12345678bbbb", "App-Blueprint-HR"],
+      ["1234445a-aaaa-aaaa-aaaa-12345678cccc", "App-Blueprint-Finance"],
+      ["1234445a-aaaa-aaaa-aaaa-12345678dddd", "App-Blueprint-Legal"],
+      ["dummy-test", "dummy-test"]
+    ]

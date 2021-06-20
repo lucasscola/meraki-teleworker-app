@@ -1,0 +1,1 @@
+it.todo('Authenticate an Azure AD user');

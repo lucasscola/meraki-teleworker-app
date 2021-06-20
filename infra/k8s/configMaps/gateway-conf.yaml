@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-conf
+data:
+  # Meraki Organization Name
+  MERAKI_ORGANIZATION_NAME: MyOrg

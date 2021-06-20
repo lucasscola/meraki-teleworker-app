@@ -1,0 +1,1 @@
+export const queueGroupName = 'meraki-gateway-service';

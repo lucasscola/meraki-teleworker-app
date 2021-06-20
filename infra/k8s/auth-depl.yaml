@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl # Deployment Name
+spec:
+  replicas: 1
+  # Selector of pods
+  selector:
+    matchLabels:
+      app: auth
+  # Template for pods
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: lucasscola/teleworker-auth
+          # Enviroment variables for this app
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: azure-secret
+                  key: AZURE_CLIENT_SECRET
+            # Mongo DB URI
+            - name: MONGO_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-conf
+                  key: MONGO_URI
+            # Azure Tenant ID
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-conf
+                  key: AZURE_TENANT_ID
+            # Azure Client ID
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-conf
+                  key: AZURE_CLIENT_ID
+            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+  selector:
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

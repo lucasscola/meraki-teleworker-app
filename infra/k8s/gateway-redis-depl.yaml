@@ -1,0 +1,31 @@
+# Downloads mongo container from dockerhub
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-redis-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-redis
+  template:
+    metadata:
+      labels:
+        app: gateway-redis
+    spec:
+      containers:
+        - name: gateway-redis
+          image: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-redis-srv
+spec:
+  selector:
+    app: gateway-redis
+  ports:
+    - name: db
+      protocol: TCP
+      port: 6379
+      targetPort: 6379

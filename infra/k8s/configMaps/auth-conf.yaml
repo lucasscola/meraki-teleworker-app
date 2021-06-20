@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-conf
+data:
+  # Mongo DB URI
+  MONGO_URI: 'mongodb://auth-mongo-srv:27017/auth'
+  # Azure Tenant ID
+  AZURE_TENANT_ID: 'a1723ca4-abcd-1234-5678-504baaa5c321'
+  # Azure Client ID
+  AZURE_CLIENT_ID: 'c8888a77-aabb-4e2e-aaaa-c3daf821dddd'

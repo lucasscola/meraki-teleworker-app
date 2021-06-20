@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-depl # Deployment Name
+spec:
+  replicas: 1
+  # Selector of pods
+  selector:
+    matchLabels:
+      app: gateway
+  # Template for pods
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: lucasscola/teleworker-gateway
+          # Enviroment variables for this app
+          env:
+            # NATS Cluster ID
+            - name: NATS_CLUSTER_ID
+              value: 'meraki'
+            # NATS URL
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            # NATS Client ID - Using Pod name for easy troubleshooting
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            # Redis host
+            - name: REDIS_HOST
+              value: gateway-redis-srv
+            # Meraki Organization Name
+            - name: MERAKI_ORGANIZATION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-conf
+                  key: MERAKI_ORGANIZATION_NAME
+            # Meraki API Token
+            - name: MERAKI_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: meraki-api-key
+                  key: MERAKI_API_TOKEN
+
+# No need for cluster IP for this service

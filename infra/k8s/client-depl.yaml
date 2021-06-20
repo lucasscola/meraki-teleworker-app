@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl # Deployment Name
+spec:
+  replicas: 1
+  # Selector of pods
+  selector:
+    matchLabels:
+      app: selfservice-client
+  # Template for pods
+  template:
+    metadata:
+      labels:
+        app: selfservice-client
+    spec:
+      containers:
+        - name: client
+          image: #Set container here
+          env:
+            - name: APP_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: client-conf
+                  key: APP_DOMAIN
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: client-conf
+                  key: AZURE_CLIENT_ID
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: client-conf
+                  key: AZURE_TENANT_ID
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: selfservice-client
+  ports:
+    - name: selfservice-client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devices-depl # Deployment Name
+spec:
+  replicas: 1
+  # Selector of pods
+  selector:
+    matchLabels:
+      app: devices
+  # Template for pods
+  template:
+    metadata:
+      labels:
+        app: devices
+    spec:
+      containers:
+        - name: devices
+          image: lucasscola/teleworker-devices
+          # Volume mount for configMap
+          volumeMounts:
+          - name: config
+            mountPath: "/etc/config"
+            readOnly: true
+          # Enviroment variables for this app
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            # Mongo DB URI
+            - name: MONGO_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: devices-conf
+                  key: MONGO_URI
+            # NATS Cluster ID
+            - name: NATS_CLUSTER_ID
+              value: 'meraki'
+            # NATS URL
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            # NATS Client ID - Using Pod name for easy troubleshooting
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            # Supernet for users corporate subnet
+            - name: SUPERNET
+              valueFrom:
+                configMapKeyRef:
+                  name: devices-conf
+                  key: SUPERNET
+            # Prefix length for each teleworker corporate subnet
+            - name: PREFIX_LENGTH
+              valueFrom:
+                configMapKeyRef:
+                  name: devices-conf
+                  key: PREFIX_LENGTH
+      volumes:
+        # Config Map with custom configuration
+        - name: config
+          configMap:
+            name: blueprints-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devices-srv
+spec:
+  selector:
+    app: devices
+  ports:
+    - name: devices
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

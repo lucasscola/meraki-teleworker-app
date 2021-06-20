@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-conf
+data:
+  # Domain for your application (used for Azure redirect)
+  APP_DOMAIN: https://meraki-selfservice.dev
+  # Azure Integration Frontend Cient ID
+  AZURE_CLIENT_ID: 12341234-aaaa-aaaa-aaaa-033473c5e39a
+  # Azure Tenant ID
+  AZURE_TENANT_ID: abcdef12-aaaa-aaaa-aaaa-506bd5a8c380

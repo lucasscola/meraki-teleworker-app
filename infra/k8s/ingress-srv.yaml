@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: meraki-selfservice.dev #Set here the host for the app
+      http:
+        paths:
+          - path: /api/users/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-srv
+                port: 
+                  number: 3000
+          - path: /api/devices/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: devices-srv
+                port: 
+                  number: 3000
+          - path: /api/passwords/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: passwords-srv
+                port: 
+                  number: 3000
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: client-srv
+                port: 
+                  number: 3000
